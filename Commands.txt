@@ -1,0 +1,118 @@
+
+
+# ------------------------------------------------------------------------------
+# 1. CREATE (მონაცემების შექმნა)
+# ------------------------------------------------------------------------------
+
+# შექმენით 3 ლექტორი
+l1 = Lecturer.objects.create(first_name="გიორგი", last_name="წულაძე")
+l2 = Lecturer.objects.create(first_name="ნინო", last_name="ხარაზიშვილი")
+l3 = Lecturer.objects.create(first_name="დავით", last_name="მაისურაძე")
+
+# შექმენით 5 კურსი და თითოეულს მიუთითეთ ლექტორი
+c1 = Course.objects.create(name="Python Basics", lecturer=l1)
+c2 = Course.objects.create(name="Django Web Development", lecturer=l1)
+c3 = Course.objects.create(name="JavaScript & React", lecturer=l2)
+c4 = Course.objects.create(name="Database Systems", lecturer=l2)
+c5 = Course.objects.create(name="Algorithms & Data Structures", lecturer=l3)
+
+# შექმენით 10 სტუდენტი
+s1 = Student.objects.create(first_name="დავით", last_name="მაისურაძე")
+s2 = Student.objects.create(first_name="ანა", last_name="ქავთარაძე")
+s3 = Student.objects.create(first_name="ლუკა", last_name="ჩხეიძე")
+s4 = Student.objects.create(first_name="მარიამ", last_name="ჯაფარიძე")
+s5 = Student.objects.create(first_name="სანდრო", last_name="ნადირაძე")
+s6 = Student.objects.create(first_name="ელენე", last_name="გაბუნია")
+s7 = Student.objects.create(first_name="ნიკოლოზ", last_name="შენგელია")
+s8 = Student.objects.create(first_name="სოფიო", last_name="მჭედლიშვილი")
+s9 = Student.objects.create(first_name="ირაკლი", last_name="დოლიძე")
+s10 = Student.objects.create(first_name="ნინო", last_name="ცინცაძე")
+
+# თითოეული სტუდენტი ჩაწერეთ მინიმუმ ორ კურსზე
+s1.courses.add(c1, c2)
+s2.courses.add(c2, c3)
+s3.courses.add(c1, c4)
+s4.courses.add(c3, c5)
+s5.courses.add(c4, c5)
+s6.courses.add(c1, c3)
+s7.courses.add(c2, c4)
+s8.courses.add(c3, c4)
+s9.courses.add(c1, c5)
+s10.courses.add(c2, c5)
+
+
+# 
+# 2. READ / QUERY (მონაცემების წამოღება და ფილტრაცია)
+#
+
+# გამოიტანეთ ყველა სტუდენტი
+all_students = Student.objects.all()
+
+# გამოიტანეთ ყველა კურსი
+all_courses = Course.objects.all()
+
+# გამოიტანეთ ყველა ლექტორი
+all_lecturers = Lecturer.objects.all()
+
+# იპოვეთ კონკრეტული სტუდენტი id-ის მიხედვით
+student_by_id = Student.objects.get(id=1)
+
+# იპოვეთ კონკრეტული კურსი სახელის მიხედვით
+course_by_name = Course.objects.get(name="Django Web Development")
+
+# გამოიტანეთ ყველა კურსი, რომელსაც კონკრეტული ლექტორი ასწავლის
+lecturer_courses = Course.objects.filter(lecturer=l1)
+
+# გამოიტანეთ ყველა სტუდენტი, რომელიც კონკრეტულ კურსზე სწავლობს
+course_students = c1.students.all()
+
+# კონკრეტული სტუდენტისთვის გამოიტანეთ ყველა კურსი
+student_courses = s1.courses.all()
+
+
+# ------------------------------------------------------------------------------
+# 3. UPDATE (მონაცემების განახლება და ცვლილება)
+# ------------------------------------------------------------------------------
+
+# კონკრეტულ სტუდენტს შეუცვალეთ სახელი
+s1.first_name = "გიორგი"
+s1.save()
+
+# კონკრეტულ ლექტორს შეუცვალეთ გვარი
+l1.last_name = "კვარაცხელია"
+l1.save()
+
+# კონკრეტულ კურსს შეუცვალეთ დასახელება
+c1.name = "Advanced Python Basics"
+c1.save()
+
+# სტუდენტს დაამატეთ კიდევ ერთი კურსი
+s1.courses.add(c3)
+
+# სტუდენტს წაუშალეთ ერთი კურსი
+s1.courses.remove(c2)
+
+# სტუდენტი გადაიყვანეთ სხვა კურსზე (ერთი კურსი წაშალეთ და მეორე დაამატეთ)
+s1.courses.remove(c1)
+s1.courses.add(c4)
+
+# კონკრეტულ კურსს შეუცვალეთ ლექტორი
+c1.lecturer = l2
+c1.save()
+
+
+# ------------------------------------------------------------------------------
+# 4. DELETE & CLEAR (წაშლა და გასუფთავება)
+# ------------------------------------------------------------------------------
+
+# წაშალეთ კონკრეტული სტუდენტი
+Student.objects.get(id=10).delete()
+
+# წაშალეთ კონკრეტული კურსი
+Course.objects.get(name="Algorithms & Data Structures").delete()
+
+# წაშალეთ კონკრეტული ლექტორი
+Lecturer.objects.get(first_name="დავით", last_name="მაისურაძე").delete()
+
+# გაასუფთავეთ კონკრეტული სტუდენტის ყველა კურსი (clear())
+s1.courses.clear()
